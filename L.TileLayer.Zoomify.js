@@ -18,7 +18,7 @@ L.TileLayer.Zoomify = L.TileLayer.extend({
     	this._imageSize = [imageSize];
     	this._gridSize = [this._getGridSize(imageSize)];
 
-        while (imageSize.x > tileSize || imageSize.y > tileSize) {
+        while (parseInt(imageSize.x) > tileSize || parseInt(imageSize.y) > tileSize) {
         	imageSize = imageSize.divideBy(2).floor();
         	this._imageSize.push(imageSize);
         	this._gridSize.push(this._getGridSize(imageSize));
