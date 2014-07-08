@@ -5,7 +5,8 @@
 L.TileLayer.Zoomify = L.TileLayer.extend({
 	options: {
 		continuousWorld: true,
-		tolerance: 0.8
+		tolerance: 0.8,
+		unloadInvisibleTiles: true
 	},
 
 	initialize: function (url, options) {
@@ -64,8 +65,23 @@ L.TileLayer.Zoomify = L.TileLayer.extend({
 
 	_tileShouldBeLoaded: function (tilePoint) {
 		var gridSize = this._gridSize[this._map.getZoom()];
-		return (tilePoint.x >= 0 && tilePoint.x < gridSize.x && tilePoint.y >= 0 && tilePoint.y < gridSize.y);
+
+		// Is this a valid Zoomify tile?
+		if(tilePoint.x < 0 || tilePoint.y < 0 || tilePoint.x >= gridSize.x || tilePoint.y >= gridSize.y){
+			return false;
+		}
+
+		// Delegate to the parent function for regular tile visibility logic
+		// FIXME: Looks like this functionality is no longer in master and may
+		// disappear in the future.
+		if(L.TileLayer.prototype._tileShouldBeLoaded){
+			return L.TileLayer.prototype._tileShouldBeLoaded.call(this, tilePoint);
+		} else {
+			return true;
+		}
 	},
+
+
 
 	_addTile: function (tilePoint, container) {
 		var tilePos = this._getTilePos(tilePoint),
